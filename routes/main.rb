@@ -1,13 +1,20 @@
 # encoding: utf-8
+require 'json'
 class MyApp < Sinatra::Application
 	before do
-		@wiki =  
+		@wiki = Wiki::Page.new('127.0.0.1', '5984', 'mywiki')
+		@datadir = "data"
+		@textdir = "#{@datadir}/text"
 	end
-	get "/*" do | path | 
+	get "/*" do | path |
 		@title = "Welcome to MyApp"				
-		puts path
-		haml :main
+		@json_data = @wiki.getPage "#{path}"
+		@contents = JSON.parse(@json_data)
+		erb :wiki
 	end
 	post "/*" do | path |
+		data = request.body.read		
+		jsondata = JSON.parse data
+		@wiki.post(jsondata['_id'], data)
 	end
 end
