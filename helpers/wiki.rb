@@ -9,8 +9,29 @@ module Wiki
 			begin
 				return (@db.get id).body
 			rescue
-				puts "page read error"
 				return nil
+			end
+		end
+		def sendPage id, data
+			begin
+			response=@db.put id, data
+			rescue RuntimeError, Net::HTTPBadResponse => e
+				case e.message
+					when /404/ then puts '404!'
+					when /500/ then puts '500!'
+				end
+			end
+		end
+		def deletePage id, rev 
+			begin
+				@db.delete id, rev
+			rescue RuntimeError, Net::HTTPBadResponse => e
+				puts e.message
+				case e.message
+					when /404/ then puts '404!'
+					when /500/ then puts '500!'
+					when /409/ then puts '409! conflict'
+				end
 			end
 		end
 	end
@@ -26,8 +47,8 @@ module Wiki
 			@dbname = dbname
 		end
 
-		def delete(id)
-			request(Net::HTTP::Delete.new("/#{@dbname}/#{id}"))
+		def delete(id, rev)
+			request(Net::HTTP::Delete.new("/#{@dbname}/#{id}?rev=#{rev}"))
 		end
 
 		def get(id)

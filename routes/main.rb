@@ -12,9 +12,18 @@ class MyApp < Sinatra::Application
 		@contents = JSON.parse(@json_data)
 		erb :wiki
 	end
+
+	delete "/*" do | path |
+		params[:rev]
+		@title = "Delete page : #{path}"
+		@json_data = @wiki.deletePage "#{path}", params[:rev]
+		@contents = JSON.parse(@json_data)
+		erb :wiki
+	end
+
 	post "/*" do | path |
 		data = request.body.read		
 		jsondata = JSON.parse data
-		@wiki.post(jsondata['_id'], data)
+		@wiki.sendPage(jsondata['_id'], data)
 	end
 end
