@@ -1,4 +1,11 @@
 require 'net/http'
+
+class WikiError < Exception;
+	def initialize(code)
+		@code = code
+	end
+	attr :code
+end
 module Wiki
 	class Page
 		def initialize (host, port, dbname)
@@ -8,30 +15,38 @@ module Wiki
 		def getPage id 
 			begin
 				return (@db.get id).body
-			rescue
-				return nil
+			rescue RuntimeError, Net::HTTPBadResponse => e
+				case e.message
+					when /404/ then code = 404
+					when /500/ then code = 500
+				end
+				raise WikiError.new code 
 			end
 		end
+
 		def sendPage id, data
 			begin
 			response=@db.put id, data
 			rescue RuntimeError, Net::HTTPBadResponse => e
 				case e.message
-					when /404/ then puts '404!'
-					when /500/ then puts '500!'
+					when /404/ then code = 404 
+					when /500/ then code = 500 
 				end
+				raise WikiError.new code 
 			end
 		end
 		def deletePage id, rev 
 			begin
 				@db.delete id, rev
+				puts 'delete success'
 			rescue RuntimeError, Net::HTTPBadResponse => e
 				puts e.message
 				case e.message
-					when /404/ then puts '404!'
-					when /500/ then puts '500!'
-					when /409/ then puts '409! conflict'
+					when /404/ then code = 404 
+					when /500/ then code = 500 
+					when /409/ then code = 409 
 				end
+				raise WikiError.new code 
 			end
 		end
 	end

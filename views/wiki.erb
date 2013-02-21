@@ -1,6 +1,23 @@
-<h1><%=@title%></h1>
-Page : <%=@contents['_id']%><br>
-Author : <%=@contents['author']%><br>
-Date : <%=@contents['date']%><br>
-내용 : <%=@contents['contents']%><br>
-Tags : <%=@contents['tags']%><br>
+<!DOCTYPE HTML>
+<head>
+	<title><%=@title%></title>
+	<link rel="stylesheet" type="text/css" href="/theme/default.css">
+</head>
+
+
+<body>
+<div id="wrapper">
+	<header>
+		<h1>페이지 만들기 : <%=@title%></h1>
+	</header>
+	<div id="corecontents">
+		<section id="contents">
+<%=@editor%>
+		<section id="contents">
+	</div>
+	<footer>
+	</footer>
+</div>
+
+</body>
+</html>
