@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><%=@title%></title>
+	<link rel="stylesheet" type="text/css" href="/theme/default.css">
+</head>
+
+<body>
+<h1><%=@contents['_id']%></h1>
+
+<section id="content">
+<div class="info">
+저자 : <%=@contents['author']%> <br \>
+작성일 : <%=@yy%>년 <%=@mm%>월 <%=@dd%>일 <%=@hh+":"+@ii%><br \>
+버전 : <%=@contents['_rev']%> 
+</div>
+<article>
+<div class="wiki">
+<%=nl2br(@contents['message'])%>
+</div>
+</article>
+</section>
+
+</body>
+</html>

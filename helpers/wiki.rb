@@ -6,6 +6,12 @@ class WikiError < Exception;
 	end
 	attr :code
 end
+
+def nl2br string
+	if string
+		string.gsub("\n\r","<br />").gsub("\r", "").gsub("\n", "<br />")
+	end
+end
 module Wiki
 	class Page
 		def initialize (host, port, dbname)
@@ -100,3 +106,4 @@ module Wiki
 		end
 	end
 end
+
