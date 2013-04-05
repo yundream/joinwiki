@@ -23,3 +23,10 @@ div.info {
 	line-height: 130%;
 	font-size: 13px;
 }
+input[type="text"] {
+background-color:transparent;
+border: 1px solid;
+height:20px;
+padding-left:5px;
+color:#000;
+}

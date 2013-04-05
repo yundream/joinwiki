@@ -20,9 +20,10 @@ class MyApp < Sinatra::Application
 			@dd=@contents['createtime'][6,2]
 			@hh=@contents['createtime'][8,2]
 			@ii=@contents['createtime'][10,2]
+			@path=path
 		rescue WikiError => e
 			if (e.code == 404)
-				redirect "/w/#{path}"
+				redirect "/w/#{path}?type=notfound"
 			end
 		end
 		erb :view
@@ -32,6 +33,16 @@ class MyApp < Sinatra::Application
 		@title = "Make page #{path}"
 		@editor = :editor
 		@path = path
+		erb :wiki
+	end
+
+	get "/e/:name" do | path |
+		@json_data = @wiki.getPage "#{path}"
+		@contents = JSON.parse(@json_data)
+		@path = path
+		@title = "#{params['type']} page #{path}"
+		@editor = :editor
+		@type = "edit" 
 		erb :wiki
 	end
 
@@ -48,15 +59,13 @@ class MyApp < Sinatra::Application
 	# Post Page 
 	post "/wiki/:name" do | path |
 		time = Time.new
-		#puts params[:message]
-		#puts params[:author]
-		#data = request.body.read
-		#jsondata = JSON.parse data
+		id = (0...32).map{ ('a'..'z').to_a[rand(26)] }.join
 		params[:createtime] = time.strftime("%Y%m%d%H%M")
-		params[:_id] = path 
+		params[:path] = path 
+		params[:_rev] = "1-5dc77729caea77842015c9eeb53efd84" 
 		data = JSON params
 		begin
-			@wiki.sendPage(path, data)
+			@wiki.sendPage("vkjbpvyahuyqivhwldvsneffandapcta", data)
 		rescue WikiError => e
 			puts "ERROR ";
 		end
