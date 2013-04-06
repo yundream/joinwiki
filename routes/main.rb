@@ -11,22 +11,28 @@ class MyApp < Sinatra::Application
 
 	# Read page
 	get "/wiki/:name" do | path |
-		@title = "Read Page #{path}"
+		view = <<END
+{"language":"javascript","map":"function(doc) { if (doc.path == '#{path}') { emit(null, doc); }}"}
+END
+		@data = nil
 		begin
-			@json_data = @wiki.getPage "#{path}"
-			@contents = JSON.parse(@json_data)
-			@yy=@contents['createtime'][0,4]
-			@mm=@contents['createtime'][4,2]
-			@dd=@contents['createtime'][6,2]
-			@hh=@contents['createtime'][8,2]
-			@ii=@contents['createtime'][10,2]
-			@path=path
+			@data = @wiki.findPage view 
 		rescue WikiError => e
 			if (e.code == 404)
 				redirect "/w/#{path}?type=notfound"
 			end
 		end
+		@contents = @data['rows'][0]['value']
+		@yy=@contents['createtime'][0,4]
+		@mm=@contents['createtime'][4,2]
+		@dd=@contents['createtime'][6,2]
+		@hh=@contents['createtime'][8,2]
+		@ii=@contents['createtime'][10,2]
+		@path=path
 		erb :view
+	end
+
+	get "/find" do 
 	end
 
 	get "/w/:name" do | path |

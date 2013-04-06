@@ -2,15 +2,15 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><%=@title%></title>
+	<title><%=@contents['title']%></title>
 	<link rel="stylesheet" type="text/css" href="/theme/default.css">
 </head>
 
 <body>
 <header>
-<h1><%=@contents['_id']%></h1>
+<h1><%=@contents['title']%></h1>
 <nav>
-<a href=/e/<%=@path%>>편집</a>
+<a href=/e/<%=@path%>>편집</a> <a href=/wiki/<%=@path%>?action=diff>diff</a>
 </nav>
 </header>
 
@@ -19,6 +19,7 @@
 저자 : <%=@contents['author']%> <br \>
 작성일 : <%=@yy%>년 <%=@mm%>월 <%=@dd%>일 <%=@hh+":"+@ii%><br \>
 버전 : <%=@contents['_rev']%> 
+ID : <%=@contents['_id']%> 
 </div>
 <article>
 <div class="wiki">

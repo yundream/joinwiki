@@ -30,6 +30,7 @@ module Wiki
 			end
 		end
 
+
 		def sendPage id, data
 			begin
 			response=@db.put id, data
@@ -41,6 +42,16 @@ module Wiki
 				raise WikiError.new code 
 			end
 		end
+
+		def findPage data 
+			response=@db.view data
+			result = JSON.parse(response.body)
+			if result['total_rows'] == 0
+				raise WikiError.new 404
+			end
+			return result 
+		end
+
 		def deletePage id, rev 
 			begin
 				@db.delete id, rev
@@ -88,6 +99,13 @@ module Wiki
 			req["content-type"] = "application/json"
 			req.body = json
 			request(req)
+		end
+
+		def view(json)
+			req = Net::HTTP::Post.new("/#{@dbname}/_temp_view")
+			req["content-type"] = "application/json"
+			req.body = json
+			res = request(req)
 		end
 
 		def request(req)
