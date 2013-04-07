@@ -32,9 +32,6 @@ END
 		erb :view
 	end
 
-	get "/find" do 
-	end
-
 	get "/w/:name" do | path |
 		@title = "Make page #{path}"
 		@editor = :editor
@@ -62,16 +59,15 @@ END
 		end
 	end
 
-	# Post Page 
+	# Create page 
 	post "/wiki/:name" do | path |
 		time = Time.new
 		id = (0...32).map{ ('a'..'z').to_a[rand(26)] }.join
 		params[:createtime] = time.strftime("%Y%m%d%H%M")
 		params[:path] = path 
-		params[:_rev] = "1-5dc77729caea77842015c9eeb53efd84" 
 		data = JSON params
 		begin
-			@wiki.sendPage("vkjbpvyahuyqivhwldvsneffandapcta", data)
+			@wiki.sendPage(id, data)
 		rescue WikiError => e
 			puts "ERROR ";
 		end
